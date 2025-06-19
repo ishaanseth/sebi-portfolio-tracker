@@ -1,0 +1,9 @@
+requests
+beautifulsoup4
+pandas
+matplotlib
+seaborn
+streamlit
+prophet
+fastapi
+uvicorn[standard]
