@@ -4,35 +4,135 @@ A comprehensive Python-based platform for scraping, analyzing, and visualizing p
 
 ## Overview
 
-SEBIPortfolioTracker automatically collects detailed information about portfolio managers, client distributions, and Assets Under Management (AUM) across multiple time periods. The platform transforms raw regulatory data into interactive visualizations, predictive models, and accessible APIs that enable data-driven investment decisions and market research.
+SEBIPortfolioTracker automatically collects detailed information about portfolio managers, client distributions, and Assets Under Management (AUM) across multiple time periods. The platform transforms raw regulatory data into an interactive analytical dashboard, provides AUM forecasting using time series models, and offers a REST API for programmatic access to data and insights. This enables data-driven investment decisions and market research.
 
 ## Key Features
 
-- **Automated Data Collection**: Efficiently scrapes portfolio management data from SEBI's website with built-in rate limiting and error handling
-- **Comprehensive Analytics**: Examines trends in AUM growth, client composition, and portfolio performance over time
-- **Interactive Dashboard**: Provides customizable visualizations and filters for exploring the dataset
-- **Predictive Models**: Forecasts market trends and identifies success factors using time series analysis and machine learning
-- **REST API**: Offers programmatic access to both raw data and derived insights
-- **Research Reports**: Includes detailed analyses of the Indian portfolio management landscape
+-   **Automated Data Collection**: Efficiently scrapes portfolio management data from SEBI's website.
+-   **Comprehensive Analytics & Visualizations**: Examines trends in AUM growth, client composition, and portfolio manager market share over time.
+-   **Interactive Dashboard**: A Streamlit-based dashboard provides customizable visualizations, filters, and AUM forecasting to explore the dataset.
+-   **Predictive Models**: Forecasts AUM trends using Prophet time series models.
+-   **REST API**: A FastAPI application offers programmatic access to both raw data and derived insights.
+-   **Data Export**: CSV export of the collected dataset.
 
-This project bridges the gap between regulatory disclosures and actionable financial intelligence, making institutional investment data more transparent and accessible to the broader market community.
+This project bridges the gap between regulatory disclosures and actionable financial intelligence, making institutional investment data more transparent and accessible.
 
-## Work in Progress
+## Project Status
 
-**Current Status**: This project is under active development. Currently, only the data collection component has been implemented.
+**Current Status**: Key components including data collection, analysis, an interactive dashboard with predictive analytics, and an API are implemented.
 
-- ✅ **Completed**: 
-  - Web scraper for extracting portfolio management data from SEBI's website
-  - CSV export functionality with comprehensive dataset organization
+-   ✅ **Completed**:
+    -   Web scraper for extracting portfolio management data from SEBI's website (`web-scraper-script.py`).
+    -   CSV export functionality with comprehensive dataset organization (`data/sebi_portfolio_data_complete.csv`).
+    -   Data analysis, visualization, and AUM forecasting components.
+    -   Interactive dashboard development using Streamlit (`data_analysis_dashboard.py`).
+    -   REST API development using FastAPI (`main_api.py`).
+    -   Generation of `requirements.txt` for easier setup.
 
-- 🔄 **In Progress**: 
-  - Data analysis and visualization components
-  - Dashboard development
-  
-- 📅 **Planned**:
-  - Predictive analytics implementation
-  - API development
-  - Enhanced data collection features
-  - Research paper/blog generation
+-   📅 **Planned Future Enhancements**:
+    -   Advanced predictive analytics (e.g., identifying factors for manager success).
+    -   Enhanced data collection features (e.g., investment strategy details, more granular data).
+    -   Generation of research reports or blog posts from insights.
 
-Contributors are welcome to help accelerate development of the pending features. Please check the Issues section for specific tasks that need assistance.
+## Project Structure
+
+-   `web-scraper-script.py`: Python script to scrape portfolio management data from the SEBI website and save it to a CSV file.
+-   `data_analysis_dashboard.py`: A Streamlit application that provides an interactive dashboard for data analysis, visualization of AUM trends, client distributions, market share, and AUM forecasting.
+-   `main_api.py`: A FastAPI application that exposes several endpoints for programmatic access to the cleaned data and analytical insights.
+-   `data/`: Directory containing the scraped data (e.g., `sebi_portfolio_data_complete.csv`) and any saved plots (though plots are now primarily dynamic in the dashboard).
+-   `requirements.txt`: Lists the Python dependencies required to run the project.
+-   `README.md`: This file.
+
+## Setup and Installation
+
+1.  **Clone the Repository**:
+    ```bash
+    git clone <repository_url>
+    cd SEBIPortfolioTracker
+    ```
+
+2.  **Create a Virtual Environment (Recommended)**:
+    ```bash
+    python -m venv venv
+    source venv/bin/activate  # On Windows: venv\Scripts\activate
+    ```
+
+3.  **Install Dependencies**:
+    Make sure you have Python 3.8+ installed. Install the required libraries using `pip`:
+    ```bash
+    pip install -r requirements.txt
+    ```
+    *Note: `prophet` installation can sometimes have system-specific dependencies (like pystan). If you encounter issues, please refer to the official Prophet installation guide.*
+
+## Running the Applications
+
+### 1. Data Scraping (If you need to refresh the data)
+
+To run the web scraper and generate/update the `sebi_portfolio_data_complete.csv`:
+```bash
+python web-scraper-script.py
+```
+*Note: The scraper can take a significant amount of time to run as it fetches data for many managers over multiple periods with built-in delays to respect the SEBI website's servers.*
+
+### 2. Interactive Dashboard
+
+To launch the Streamlit dashboard for data analysis and visualization:
+```bash
+streamlit run data_analysis_dashboard.py
+```
+This will typically open the dashboard in your web browser.
+
+### 3. API Service
+
+To start the FastAPI service:
+```bash
+uvicorn main_api:app --reload
+```
+The API will be accessible at `http://127.0.0.1:8000`. You can explore the API documentation (auto-generated by FastAPI) at `http://127.0.0.1:8000/docs`.
+
+## Using the Platform
+
+### Dashboard Features
+
+The interactive Streamlit dashboard (`data_analysis_dashboard.py`) provides the following key analyses and visualizations:
+
+-   **Overall AUM Growth Trend**: Displays the total Assets Under Management across all portfolio managers over the selected year range.
+-   **Top Portfolio Managers**: Shows a bar chart of the top 10 portfolio managers based on their latest reported AUM.
+-   **Client Distribution**: For a selected portfolio manager, this section visualizes the composition of their clients (e.g., Corporates, Non-Residents, FPIs) based on the latest available data.
+-   **Market Share Analysis**: A pie chart illustrating the market share of the top 5 portfolio managers by latest AUM, with smaller managers grouped into an 'Others' category.
+-   **AUM Forecasting**: Utilizes the Prophet time series model to forecast future AUM for the "Overall Market" or a specifically selected portfolio manager for the next 2 years (quarterly).
+-   **Interactive Filters**: Users can filter data by Portfolio Manager and Year Range using sidebar widgets to dynamically update the displayed information.
+-   **Raw Data Views**: Options to display samples of the raw cleaned data and the latest entries per manager.
+
+### API Endpoints
+
+The FastAPI application (`main_api.py`) provides programmatic access to the data and insights. Key endpoints include:
+
+-   **`GET /data/all_cleaned_sample`**:
+    -   Description: Retrieves a sample of the full cleaned SEBI portfolio dataset.
+    -   Parameters: `limit` (optional, default: 100) - number of records to return.
+-   **`GET /data/latest_entry/{manager_name}`**:
+    -   Description: Fetches the latest available data (AUM and client details) for a specified portfolio manager.
+    -   Path Parameter: `manager_name` (string).
+-   **`GET /metrics/total_aum_growth`**:
+    -   Description: Provides time series data for the total AUM growth across all managers.
+    -   Parameters: `start_year` (optional, int), `end_year` (optional, int).
+-   **`GET /metrics/top_managers_aum`**:
+    -   Description: Returns a list of the top N portfolio managers based on their latest AUM.
+    -   Parameters: `n` (optional, int, default: 10).
+-   **`GET /metrics/client_distribution/{manager_name}`**:
+    -   Description: Gets the client distribution for a specific portfolio manager based on their latest data.
+    -   Path Parameter: `manager_name` (string).
+-   **`GET /metrics/market_share_aum`**:
+    -   Description: Calculates and returns the market share of the top N portfolio managers by latest AUM.
+    -   Parameters: `n` (optional, int, default: 5).
+-   **`GET /forecast/aum/{manager_or_market}`**:
+    -   Description: Provides AUM forecast data (including yhat, yhat_lower, yhat_upper) and the Plotly figure JSON for either the "Overall Market" or a specific portfolio manager.
+    -   Path Parameter: `manager_or_market` (string - "Overall Market" or a specific manager name).
+    -   Parameters: `periods` (optional, int, default: 8 for 8 quarters).
+
+The API includes interactive documentation (Swagger UI) accessible at the `/docs` endpoint (e.g., `http://127.0.0.1:8000/docs`) when the API service is running.
+
+---
+
+Contributors are welcome to help accelerate development of the planned features. Please check the Issues section for specific tasks that need assistance.
