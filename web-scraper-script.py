@@ -10,8 +10,13 @@ Original file is located at
 import csv
 from bs4 import BeautifulSoup
 import requests
+import os
 import time
-from google.colab import files
+
+try:
+    from google.colab import files  # Only available when running in Colab
+except ImportError:
+    files = None
 
 # Base URL to scrape data from
 BASE_URL = "https://www.sebi.gov.in/sebiweb/other/OtherAction.do?doPmr=yes"
@@ -208,11 +213,14 @@ def main():
             print(f"No data found for {pm['name']}")
 
     if all_data:
-        output_filename = "sebi_portfolio_data_complete.csv"
+        os.makedirs("data", exist_ok=True)
+        output_filename = os.path.join("data", "sebi_portfolio_data_complete.csv")
         write_to_csv(all_data, output_filename)
         print(f"\nData successfully written to {output_filename}")
 
         # Attempt download in Colab
+        if files is None:
+            return
         try:
             files.download(output_filename)
             print("Download initiated. Check your browser's download folder.")

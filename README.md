@@ -58,17 +58,17 @@ This project bridges the gap between regulatory disclosures and actionable finan
     ```
 
 3.  **Install Dependencies**:
-    Make sure you have Python 3.8+ installed. Install the required libraries using `pip`:
+    Make sure you have Python 3.11+ installed. Install the required libraries using `pip`:
     ```bash
     pip install -r requirements.txt
     ```
-    *Note: `prophet` installation can sometimes have system-specific dependencies (like pystan). If you encounter issues, please refer to the official Prophet installation guide.*
+    *Note: dependency versions are pinned on purpose. Newer releases of `prophet` (1.2+) and `cmdstanpy` (1.3+) break the AUM forecasting feature, so avoid upgrading them independently.*
 
 ## Running the Applications
 
 ### 1. Data Scraping (If you need to refresh the data)
 
-To run the web scraper and generate/update the `sebi_portfolio_data_complete.csv`:
+To run the web scraper and regenerate `data/sebi_portfolio_data_complete.csv` (works both locally and in Google Colab):
 ```bash
 python web-scraper-script.py
 ```
